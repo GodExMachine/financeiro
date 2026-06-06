@@ -2,7 +2,7 @@
   "name": "FinanceApp",
   "short_name": "FinanceApp",
   "description": "Controle financeiro pessoal",
-  "start_url": "./financeiro.html",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#0f0f13",
   "theme_color": "#0f0f13",

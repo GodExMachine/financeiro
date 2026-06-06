@@ -1,6 +1,6 @@
 const CACHE_NAME = 'financeapp-v1';
 const ASSETS = [
-  './financeiro.html',
+  './index.html',
   './manifest.json'
 ];
 
