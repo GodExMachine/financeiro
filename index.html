@@ -451,6 +451,9 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(-
         <div class="filter-chip" onclick="setFilterTrans('receita',this)">Receitas</div>
         <div class="filter-chip" onclick="setFilterTrans('despesa',this)">Despesas</div>
         <div class="filter-chip" onclick="setFilterTrans('transferencia',this)">Transferências</div>
+        <div class="filter-chip" id="btnOrdemTrans" onclick="toggleOrdemTrans()" style="margin-left:auto;display:flex;align-items:center;gap:4px;background:var(--surface2);border-color:var(--border)">
+          <span id="ordemTransIcon" style="font-size:11px">↓</span><span id="ordemTransLabel">Recente</span>
+        </div>
       </div>
       <div class="filter-bar" id="filterTransConta" style="margin-top:-4px"></div>
       <div id="transList"></div>
@@ -863,6 +866,7 @@ let DB = {
 let chartBar = null, chartPie = null;
 let filterTransType = '';
 let filterTransConta = '';
+let filterTransOrdem = 'desc'; // 'desc' = mais recente primeiro, 'asc' = mais antigo primeiro
 let chartBarMode = 6;
 let currentPage = 'dashboard';
 
@@ -1293,6 +1297,15 @@ const setFilterTransConta = (contaId, el) => {
   renderTransacoes();
 };
 
+const toggleOrdemTrans = () => {
+  filterTransOrdem = filterTransOrdem === 'desc' ? 'asc' : 'desc';
+  const icon = document.getElementById('ordemTransIcon');
+  const label = document.getElementById('ordemTransLabel');
+  icon.textContent = filterTransOrdem === 'desc' ? '↓' : '↑';
+  label.textContent = filterTransOrdem === 'desc' ? 'Recente' : 'Antigo';
+  renderTransacoes();
+};
+
 const renderFilterContas = () => {
   const bar = document.getElementById('filterTransConta');
   if(!bar) return;
@@ -1317,7 +1330,7 @@ const renderTransacoes = () => {
   const el = document.getElementById('transList');
   const search = (document.getElementById('searchTrans')||{}).value?.toLowerCase()||'';
   const mes = document.getElementById('filterTransMes')?.value || thisMonth();
-  let trans = [...DB.transacoes].sort((a,b)=>b.dataTransacao?.localeCompare(a.dataTransacao));
+  let trans = [...DB.transacoes].sort((a,b)=>filterTransOrdem==='desc'?b.dataTransacao?.localeCompare(a.dataTransacao):a.dataTransacao?.localeCompare(b.dataTransacao));
   trans = trans.filter(t=>t.dataTransacao?.startsWith(mes));
   if(filterTransType) trans = trans.filter(t=>t.tipo===filterTransType);
   if(filterTransConta) trans = trans.filter(t=>t.contaId===filterTransConta||t.contaDestId===filterTransConta);
